@@ -101,11 +101,11 @@
                     <td>{{ client.WorkPhone }}</td>
                     <td>{{ client.PersonalPhone }}</td>
                     <td>
-                        <form action="{% url 'get_client' id_client=client.id %}" method="GET" style="display:inline-block;">
+                        <form action="" method="" style="display:inline-block;">
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
                         </form>
-                        <form action="{% url 'update_client' id_client=client.id %}" method="GET" style="display:inline-block;">
+                        <form action="" method="GET" style="display:inline-block;">
                             {% csrf_token %}
                             <button type="submit" class="btn" style="background-color:#130561;color: white ;">Editar</button>
                         </form>
