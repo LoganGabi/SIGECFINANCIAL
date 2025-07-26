@@ -1,0 +1,117 @@
+table {
+    width: 80%; /* Largura da tabela */
+    margin: 20px auto; /* Centraliza a tabela */
+    border-collapse: collapse; /* Remove espaços entre as células */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para a tabela */
+}
+
+/* Estilo das células do cabeçalho */
+th {
+    background-color: #140757; /* Cor de fundo */
+    color: white; /* Cor do texto */
+    padding: 10px; /* Espaçamento interno */
+    text-align: left; /* Alinhamento do texto */
+}
+
+/* Estilo das células do corpo da tabela */
+td {
+    border: 1px solid #ddd; /* Borda das células */
+    padding: 10px; /* Espaçamento interno */
+}
+th:first-child {
+    border-top-left-radius: 10px; /* Canto superior esquerdo */
+}
+
+th:last-child {
+    border-top-right-radius: 10px; /* Canto superior direito */
+}
+
+/* Estilo para linhas pares do corpo da tabela */
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Cor de fundo para linhas pares */
+}
+
+/* Efeito ao passar o mouse sobre as linhas */
+tr:hover {
+    background-color: #ddd; /* Cor de fundo ao passar o mouse */
+}
+
+
+.container {
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: row; /* Alinha os itens em linha */
+    justify-content: space-between; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 10vh; /* Altura total da tela */
+    /* background-color: ; Cor de fundo opcional */
+    width: 80%; /* Largura da tabela */
+    margin: 20px auto; /* Centraliza a tabela */
+}
+
+.container_entrebuttons {
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: row; /* Alinha os itens em linha */
+    justify-content: space-between; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 10vh; /* Altura total da tela */
+    /* background-color: ; Cor de fundo opcional */
+    width: 80%; /* Largura da tabela */
+    margin: 20px auto; /* Centraliza a tabela */
+}
+
+
+.form-group {
+    display: flex; /* Alinha os widgets dentro do form-group em linha */
+    gap: 10px; /* Espaçamento entre os widgets */
+}
+
+.search-input {
+    padding: 10px; /* Adiciona padding ao input */
+    border: 1px solid #ccc; /* Borda do input */
+    border-radius: 4px; /* Cantos arredondados */
+    flex-grow: 1; /* Faz o input crescer para ocupar o espaço disponível */
+    min-width: 400px; /* Largura mínima para o input */
+}
+
+.search-button, .register-button {
+    padding: 10px 15px; /* Adiciona padding aos botões */
+    border: none; /* Remove borda padrão */
+    border-radius: 4px; /* Cantos arredondados */
+    cursor: pointer; /* Muda o cursor ao passar por cima */
+}
+
+.search-button {
+    background-color: #007BFF; /* Cor de fundo do botão de pesquisar */
+    color: white; /* Cor do texto */
+}
+
+.register-button {
+    background-color: #28A745; /* Cor de fundo do botão de cadastrar */
+    color: white; /* Cor do texto */
+}
+
+
+
+
+
+.bg-adapted{
+    color:white;
+    background-color: #0b0433;
+}
+
+@keyframes desaparecer {
+    0% { opacity: 1; }
+    99% { opacity: 0; }
+    100% { opacity: 0; display: none; }
+  }
+  
+.successContainer{
+    animation: desaparecer 4s forwards;
+    opacity: 1;
+}
+
+#messageContainer{
+    margin: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}

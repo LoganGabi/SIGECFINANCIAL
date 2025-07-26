@@ -1,0 +1,135 @@
+{% extends 'login/menu.html' %}
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        {% block css %}
+        <meta name="csrf-token" content="{{ csrf_token }}">
+
+        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="position-absolute  start-50">
+                <div class="">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if "successClient" in message.tags %}
+                            <div style="max-height: 50px; max-width: 400px;" class="successContainer"> 
+                                <div class="alert {{ message.tags }} alert-success ">
+                                    <strong>Sucesso!</strong>
+                                {{ message }}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="container">
+            </div>
+            <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+        {% if page_obj %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Atividade Realizada</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                {% for log in page_obj %}
+                <tr>
+                    <td>{{ log.id }}</td>
+                    
+                    {% if log.action == 0 %}
+                        <td>O Usuario {{ log.actor }} Criou os registros da {{ log.content_type_id|cont_type }} {{ page_obj.changes.id.1}} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
+
+                    {% elif log.action == 1 %}
+                        <td>O Usuario {{ log.actor }} Editou os registros da {{ log.content_type_id|cont_type }} {{ page_obj.changes.id.1}} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
+
+                    {% elif log.action == 2 %}
+                        <td>O Usuario {{ log.actor }} Deletou os registros da {{ log.content_type_id|cont_type }} {{ page_obj.changes.id.1}} as {{ log.timestamp|date:"H:i:s \d\o \d\i\a d/m/Y" }} usando o IP {{ log.remote_addr}}</td>
+                    {% endif %}
+                    <td>
+                        <form action="{% url 'log_detailed' log_id=log.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                    </td>
+                        
+                    
+                    
+                </tr>
+                {% endfor %}
+                
+                </tbody>
+            </table>
+            <nav>
+            <ul class="pagination justify-content-center">
+
+            {# Botão Primeira página #}
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="Primeira">
+                    <<
+                </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                <span class="page-link"><<</span>
+                </li>
+            {% endif %}
+
+            {# Números das páginas #}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {# Botão Última página #}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                    >>
+                </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                <span class="page-link">>></span>
+                </li>
+            {% endif %}
+
+            </ul>
+        </nav>
+
+        {% else %}
+        <div class="alert alert-info">
+            Nenhum log encontrado.
+        </div>
+        {% endif %}
+
+
+        </div> 
+        {% endblock %}
+        {% block scripts %}
+        <script src="{% static 'js/search_client.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        {% endblock %}
+    </body>
+</html>

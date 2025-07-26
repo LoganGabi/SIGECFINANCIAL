@@ -1,0 +1,389 @@
+    {% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+    {% endblock %}
+    <title>Formulário</title>
+    {% bootstrap_css %}
+</head>
+<body>
+    {% block content %}
+    <div class="content">
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="col d-flex mb-5 gap-4 mt-5 ">
+                <a href="{% url 'Client' %}">
+                    <button class="btn btn-voltar" type="button">
+                        <i class="fas fa-arrow-left"></i> 
+                    </button>
+                </a>   
+                
+                <h4 class="c-adapted">Cadastro de Cliente</h4>
+            </div>
+         
+            <h6>
+                Informações Pessoais
+            </h6>
+            {% with form_value=request.POST.form_choice|default:selected_form %}
+            <select id="formSelect" name="form_choice" onchange="updateForm()" class="form-select form-select-lg mb-3">
+                
+                <option value="Pessoa Fisica"
+                    {% if form_value == 'Pessoa Fisica' or form_value == 'Pessoa Física' %}selected{% endif %}
+                >
+                    Pessoa Fisica
+                </option>
+
+                <option value="Pessoa Juridica"
+                    {% if form_value == 'Pessoa Juridica' %}selected{% endif %}
+                >
+                    Pessoa Juridica
+                </option>
+
+                <option value="Estrangeiro"
+                    {% if form_value == 'Estrangeiro' %}selected{% endif %}
+                >
+                    Estrangeiro
+                </option>
+
+            </select>
+            {% endwith %}
+
+            <div class="form-margin row">
+
+                <div class="row">
+                    <div class="col">
+                        <label for="">{{form_Person.WorkPhone.label}}</label>
+                        {{form_Person.WorkPhone}}
+                    </div>
+    
+                    <div class="col">
+                        <label for="">{{form_Person.PersonalPhone.label}}</label>
+                        {{form_Person.PersonalPhone}}
+                    </div>
+    
+                    <div class="col">
+                        <label for="">{{form_Person.site.label}}</label>
+                        {{form_Person.site}}
+                    </div>
+    
+                    <div class="col">
+                        <label for="">{{form_Person.salesman.label}}</label>
+                        {{form_Person.salesman}}
+                    </div>
+    
+                    <div class="col">
+                        <!-- <label for="">{{form_Person.creditLimit.label}}</label> -->
+                        {{form_Person.creditLimit.as_hidden}}
+                    </div>
+                 </div>
+
+            </div>
+            <!-- Formulário 1: Pessoa Fisica -->
+            <div id="form1" class="form-margin row">
+                <!-- Formulário de Pessoa Física -->
+                <div class="row">
+                    
+                    <div class="col-xl-5">
+                        <label for=>{{form_fisicPerson.name.label}}</label>
+                        {{form_fisicPerson.name}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for=>{{form_fisicPerson.cpf.label}}</label>
+                        <!-- <div class="row  wid-2"> -->
+                            {{form_fisicPerson.cpf}}
+                        <!-- </div> -->
+                    </div> 
+                  
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xl-3">
+                        <label for=>{{form_fisicPerson.rg.label}}</label>
+                        {{form_fisicPerson.rg}}
+                    </div>
+
+                    <div class="col-xl-2">
+
+                        <label class="row" for=>{{form_fisicPerson.dateOfBirth.label}}</label>
+                        <div class="row wid-2">
+                            {{form_fisicPerson.dateOfBirth}}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulário 2: Pessoa Juridica -->
+            <div id="form2" style="display: none;" class="form-margin row">
+                <!-- <h3>Formulário 2: Pessoa Juridica</h3> -->
+                <div class="row">
+
+                    <div class="col-xl-4">
+                        <label for="">{{form_legalPerson.fantasyName.label}}</label>
+                        {{form_legalPerson.fantasyName}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.cnpj.label}}</label>
+                        {{form_legalPerson.cnpj}}
+                    </div>
+
+                    <div class="col-xl-5">
+                        <label for="">
+                            {{form_legalPerson.socialReason.label}}
+                        </label>
+                        {{form_legalPerson.socialReason}}
+                    </div>
+                   
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.StateRegistration.label}}</label>
+                        {{form_legalPerson.StateRegistration}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.MunicipalRegistration.label}}</label>
+                        {{form_legalPerson.MunicipalRegistration}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.typeOfTaxpayer.label}}</label>
+                        {{form_legalPerson.typeOfTaxpayer}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.suframa.label}}</label>
+                        {{form_legalPerson.suframa}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for=""> {{form_legalPerson.Responsible.label}}</label>
+                        {{form_legalPerson.Responsible}}
+                    </div>
+                   
+
+                </div>
+                <!-- {{ form_legalPerson.as_p }} -->
+            </div>
+            
+            <!-- Formulário 3: Estrangeiro -->
+            <div id="form3" style="display: none;" class="form-margin row">
+                <!-- <h3>Formulário 3: Estrangeiro</h3> -->
+                
+                <div class="row">
+                    
+                    <div class="col-xl-4">
+                        <label for="">{{ form_foreigner.name_foreigner.label }}</label>
+                        {{form_foreigner.name_foreigner}}
+                    </div>
+                    
+                    <div class="col-xl-3">
+                        <label for="">{{form_foreigner.num_foreigner.label}}</label>
+                        {{form_foreigner.num_foreigner}}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- cadastro de atributos -->
+            <div class="row mb-5 mt-5">
+                <h6>
+                    Atributos
+                </h6>
+                <div class="form-margin row">
+                    <div class="col mb-2">
+                        <div class="form-check form-switch">
+                            {{form_Person.isClient}}
+                            {{form_Person.isClient.label}}
+                        </div>
+                        
+                        <div class="col form-check form-switch">
+                            {{form_Person.isSupllier}}
+                            {{form_Person.isSupllier.label}}
+                        </div>
+
+                        <div class="col form-check form-switch">
+                            {{form_Person.isUser}}
+                            {{form_Person.isUser.label}}
+                        </div>
+                       
+                    </div>
+                    <div class="col mb-2">
+                        <div class="form-check form-switch col">
+                            {{form_Person.isEmployee}}
+                            {{form_Person.isEmployee.label}}
+                        </div>
+                       
+                        <div class="form-check form-switch col">
+                            {{form_Person.issalesman}}
+                            {{form_Person.issalesman.label}}
+                        </div>
+                        
+                        <div class="form-check form-switch col">
+                            {{form_Person.isFormer_employee}}
+                            {{form_Person.isFormer_employee.label}}
+                        </div>
+                       
+                    </div>
+                    <div class="col  mb-2">
+                        <div class="form-check form-switch">
+                            {{form_Person.isCarrier}}
+                            {{form_Person.isCarrier.label}}
+                        </div>
+                       
+                        <div class="form-check form-switch">
+                            {{form_Person.isDelivery_man}}
+                            {{form_Person.isDelivery_man.label}}
+                        </div>
+                       
+                        <div class="form-check form-switch">
+                            {{form_Person.isTechnician}}
+                            {{form_Person.isTechnician.label}}
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+          
+               
+            <!-- {{ form_Person.as_p }} -->
+
+            <div class="row mb-5 mt-5" >
+                <div id="campos" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                        <label for="email">{{form_Person.email.label}}</label>
+                        {{form_Person.email}}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="senha">{{form_Person.password.label}}</label>
+                            <div class="input-group">
+                                {{ form_Person.password }}
+                                <button type="button" class="btn btn-outline-secondary" onclick="mostrarSenha()">
+                                    <i class="bi bi-eye" id="icone-olho"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-danger">
+                    {% for error in form.email.errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+                    <fieldset>
+                        <legend>
+                            <h6>
+                                Endereço
+                            </h6>
+                        </legend>
+                        <div class="form-margin row">
+                            <div class="row">
+
+                                <div class="col-xl-2">
+                                    <label for=>{{form_address.cep.label}}</label>
+                                    {{form_address.cep}}
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-xl-3">
+                                    <label for=>{{form_address.country.label}}</label>
+                                    {{form_address.country}}
+                                </div>
+
+                                <div class="col-xl-1">
+                                    <label for=>{{form_address.uf.label}}</label>
+                                    {{form_address.uf}}
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <label for="">
+                                        {{form_address.city.label}}
+                                    </label>
+                                    {{form_address.city}}
+                                </div>
+
+                            </div>
+                        
+
+                            <div class="row">
+
+                                <div class="col-xl-3">
+                                    <label for="">
+                                        {{form_address.neighborhood.label}}
+                                    </label>
+                                    {{form_address.neighborhood}}
+                                </div>
+
+                                <div class="col-xl-4">
+                                    <label for="">
+                                        {{form_address.road.label}}
+                                    </label>
+                                    {{form_address.road}}
+                                </div>
+
+                                <div class="col-xl-1">
+                                    <label class="input-max" for="">
+                                        {{form_address.number.label}}
+                                    </label>
+                                    {{form_address.number}}
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-xl-5">
+                                    <label for="">
+                                        {{form_address.complement.label}}
+                                    </label>
+                                    {{form_address.complement}}
+                                </div>
+
+                                <div class="col-xl-5">
+                                    <label for="">
+                                        {{form_address.reference.label}}
+                                    </label>
+                                    {{form_address.reference}}
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit"  class="btn bg-adapted">Enviar</button>
+                </div>
+                
+            </div>
+            
+        </form>
+    </div>
+
+    <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+    <script src="{% static 'js/mask.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/cep_api.js' %}"></script>
+    <script src="{% static 'js/registryform.js' %}"></script>
+    <script src="{% static 'js/user.js' %}"></script>
+
+    {% endblock %}
+</body>
+</html>

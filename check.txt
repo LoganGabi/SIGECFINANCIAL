@@ -1,0 +1,18 @@
+formas de pagamento
+    Descrição
+    considerar em caixa (oculto)
+    permissao pra usar o limite de credito(oculto)
+    ativo(oculto)
+
+plano de contas
+    Descrição
+    ativo(oculto)
+
+Situação
+    Descrição
+    ativo(oculto)
+
+Cargos (possivel desativação)
+    Descrição
+    ativo(oculto)
+

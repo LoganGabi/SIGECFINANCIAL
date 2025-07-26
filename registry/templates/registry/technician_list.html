@@ -1,0 +1,103 @@
+{% extends 'login/menu.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        {% block css %}
+        <meta name="csrf-token" content="{{ csrf_token }}">
+
+        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="container">
+                <a href="{% url 'Client_Create' %}">
+                    <button class="btn btn-success">Cadastrar</button>
+                </a>
+                <div class="form-group">
+                    <form method="GET" action="{% url 'Client' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">
+                                <label for="" class="">{{form.search.label}}</label>
+                                {{form.search}}
+                                <div class="col-sm-8" id="search_client">
+                                    <input type="text" id="searchInput"  class="search-input" value="{{ request.GET.query }}"> <!-- onkeyup="searchInput()" -->
+                                    <!-- <input type="text" id="search" name="search" class="form-control" placeholder="Digite o nome do cliente" value="{{ request.GET.search }}"> -->
+                                    <!-- <input type="text" id="searchBox" placeholder="Pesquise um cliente..."> -->
+                                </div>
+                            </div>
+                            <div class="col">
+                                <!-- <button type="submit" class="btn btn-primary mt-4">Pesquisar</button> -->
+                            </div>
+                        
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Telefone Pessoal</th>
+                        <th>Telefone de Trabalho</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                {% for client in clients.object_list %}
+                <tr>       
+                    <td>{{ client.id }}</td>
+                    {% if client.id_FisicPerson_fk %}
+                        <td>{{ client.id_FisicPerson_fk.name }}</td>
+                    {% elif client.id_LegalPerson_fk %}
+                        <td>{{ client.id_LegalPerson_fk.fantasyName }}</td>
+                    {% elif client.id_ForeignPerson_fk %}
+                        <td>{{ client.id_ForeignPerson_fk.name_foreigner }}</td>
+                    {% else  %}
+                        <td>{{ client.name }}</td>
+                    {% endif %}
+                    <td>{{ client.WorkPhone }}</td>
+                    <td>{{ client.PersonalPhone }}</td>
+                    <td>
+                        <form action="{% url 'get_client' id_client=client.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                        <form action="{% url 'update_client' id_client=client.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </form>
+                        <form action="{% url 'delete_client' id_client=client.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div id="paginationContainer">
+                {% if clients.has_previous %}
+                <a href="{% url 'Client' %}?page={{ clients.previous_page_number }}&query={{ query }}">Anterior</a>
+                {% endif %}
+                {% if clients.has_next %}
+                <a href="{% url 'Client' %}?page={{ clients.next_page_number }}&query={{ query  }}">Proximo</a>
+                {% endif %}
+            </div>
+        </div> 
+        {% endblock %}
+        {% block scripts %}
+        <script src="{% static 'js/techSearch.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        {% endblock %}
+    </body>
+</html>

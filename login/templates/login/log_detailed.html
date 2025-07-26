@@ -1,0 +1,87 @@
+{% extends 'login/menu.html' %}
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+        {% endblock %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        <main >
+            {% block content %}
+            <div class='content'>
+                <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+                <a href="{% url 'log' %}">
+                    <button class="btn btn-voltar">Voltar</button>
+                </a>
+                <table>
+                    <tbody id="results">
+                        <tr>
+                            <td>Usuario que {{ page_obj.action|action }} a {{ page_obj.content_type_id|cont_type  }}:</td>
+                            <td>{{ page_obj.actor }}</td>
+                        </tr>
+                        <tr>
+                            <td>data</td>
+                            <td>{{ page_obj.timestamp|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Hora</td>
+                            <td>{{ page_obj.timestamp|date:"H:i:s" }}</td>
+                        </tr>
+                        <tr>
+                            <td>IP de Acesso</td>
+                            <td>{{ page_obj.remote_addr }}</td>
+                        </tr>
+                        <tr>
+                            <td>Dados Cadastrais</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Campo</td>
+                            <td>Informação</td>
+                        </tr>
+                        {% for field, values in page_obj.changes.items %}
+                            <tr>
+                                {% if field|slice:":2" != 'is' and field|slice:":2" != 'id' %}
+                                    {% if field != 'email' and field != 'password' %}
+                                        <td>
+                                            <strong>{{ field }}</strong> 
+                                        </td>
+                                        
+                                        {% if values.0 != 'None'  %}
+                                        <td>
+                                            alterado de <em>{{ values.0 }}</em> para <em>{{ values.1 }}</em>
+                                        </td>
+                                        {% else %}
+                                        <td>
+                                            Adicionado <em>{{ values.1 }}</em>
+                                        </td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+            {% endblock %}
+        </main>
+        
+        <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+        <script src="{% static 'js/mask.js' %}"></script>
+     
+    </body>
+</html>

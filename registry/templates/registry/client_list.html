@@ -1,0 +1,155 @@
+{% extends 'login/menu.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        {% block css %}
+        <meta name="csrf-token" content="{{ csrf_token }}">
+
+        <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="position-absolute  start-50">
+                <div class="">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if "successClient" in message.tags %}
+                            <div style="max-height: 50px; max-width: 400px;" class="successContainer"> 
+                                <div class="alert {{ message.tags }} alert-success ">
+                                    <strong>Sucesso!</strong>
+                                {{ message }}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="col">
+                    <a href="{% url 'Client_Create' %}">
+                        <button class="btn btn-success">Cadastrar</button>
+                    </a>
+                    <div style="height: 03px;">
+                        <div id="messageContainer" class="font-roboto"></div>  
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <form method="GET" action="{% url 'Client' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">
+                                <label for="" class="">{{form.search.label}}</label>
+                                {{form.search}}
+                                <div class="col-sm-8" id="search_client">
+                                    <input type="text" id="searchInput"  class="search-input" value="{{ request.GET.query }}" placeholder="Pesquisar cliente(s)"> <!-- onkeyup="searchInput()" -->
+                                    <!-- <input type="text" id="search" name="search" class="form-control" placeholder="Digite o nome do cliente" value="{{ request.GET.search }}"> -->
+                                    <!-- <input type="text" id="searchBox" placeholder="Pesquise um cliente..."> -->
+                                </div>
+                            </div>
+                            <div class="col">
+                                <!-- <button type="submit" class="btn btn-primary mt-4">Pesquisar</button> -->
+                            </div>
+                        
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+            <table>
+                <thead>
+                    <tr>
+                        {% for field,label in colunas %}
+                        <th>
+                            <a class="cabecalho" href="?page={{ clients.number }}&sort={{ field }}&dir={% if current_dir == 'asc' %}desc{% else %}asc{% endif %}&query={{ query }}" style="color:inherit;text-decoration: none;">
+                                {{ label }}
+                                {% if current_dir == 'asc' %}
+                                    ▲
+                                {% else %}
+                                    ▼
+                                {% endif %}
+                            </a>
+                        </th>
+                        {% endfor %}
+                        <th>Telefone Pessoal</th>
+                        <th>Telefone de Trabalho</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                {% for client in clients.object_list %}
+                <tr>       
+                    <td>{{ client.id }}</td>
+                    {% if client.id_FisicPerson_fk %}
+                        <td>{{ client.id_FisicPerson_fk.name }}</td>
+                    {% elif client.id_LegalPerson_fk %}
+                        <td>{{ client.id_LegalPerson_fk.fantasyName }}</td>
+                    {% elif client.id_ForeignPerson_fk %}
+                        <td>{{ client.id_ForeignPerson_fk.name_foreigner }}</td>
+                    {% else  %}
+                        <td>{{ client.name }}</td>
+                    {% endif %}
+                    <td>{{ client.WorkPhone }}</td>
+                    <td>{{ client.PersonalPhone }}</td>
+                    <td>
+                        <form action="{% url 'get_client' id_client=client.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #117027;color: white;">Visualizar</button>
+                        </form>
+                        <form action="{% url 'update_client' id_client=client.id %}" method="GET" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color:#130561;color: white ;">Editar</button>
+                        </form>
+                        <form action="{% url 'delete_client' id_client=client.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div id="paginationContainer" class="d-flex justify-content-center align-items-center">
+                <div class="row text-center">
+                    <div class="col me-5">
+                        {% if clients.has_previous %}
+                            <a href="{% url 'Client' %}?page={{ clients.previous_page_number }}&query={{ query }}" class="me-5">
+                                 <span aria-hidden="true" style="font-size: 32px;">&laquo;</span>
+                            </a>
+                        {% else %}
+                            <a class="me-5">
+                                <span aria-hidden="true" aria-disabled="true" style="font-size: 32px;color: gray; pointer-events: none">&laquo;</span>
+                            </a>
+                        {% endif %}
+                        
+                        {% if clients.has_next %}
+                            <a href="{% url 'Client' %}?page={{ clients.next_page_number }}&query={{ query }}" class="me-5">
+                                <span aria-hidden="true" style="font-size: 32px;">&raquo;</span>
+                            </a>
+                        {% else %}
+                            <a class="me-5">
+                                   <span aria-hidden="true" aria-disabled="true" style="font-size: 32px;color: gray; pointer-events: none">&raquo;</span>
+                            </a>
+                        {% endif %}
+
+                    </div>
+                </div>
+    
+            </div>
+        </div> 
+        {% endblock %}
+        {% block scripts %}
+        <script src="{% static 'js/search_client.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        {% endblock %}
+    </body>
+</html>

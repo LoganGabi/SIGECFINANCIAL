@@ -1,0 +1,74 @@
+
+.mButton{
+    padding: 10px 20px;
+    background-color: rgb(233, 233, 233);
+    border: 1px solid gray;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.mButton:hover{
+    opacity: 0.8;
+}
+.modal{
+    position: absolute;
+    z-index:2;
+    background-color: white;
+    left: 50%;
+    top: 100px;
+    transform: translateX(-50%);
+    width: 500px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    height: 30%;
+    /* background-color: rgb(218, 199, 199); */
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+
+    animation: modalIn 0.5s;
+}
+
+.modal header{
+    background-color: rgb(255,92,92);
+    color: white;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding:10px 20px;
+    display: flex;
+    align-items: center;
+    gap:10px;
+    font-size: 1.2em;
+    font-weight: 800;
+}
+.modal .mBody{
+    margin-top: 50px;
+}
+
+.modal footer{
+    padding: 10px 20px 12px;
+    border-top: 1px solid rgb(214, 214, 214);
+}
+
+.modal footer button{
+    float: right;
+    padding: 7px 10px;
+    background-color: rgb(255,92,92);
+    color: white;
+}
+
+@keyframes modalIn{
+    from{
+        transform: translate(-50%,-110%);
+    }
+    to{
+        transform: translate(-50%,0);
+    }
+}
+@keyframes modalOut{
+    from{
+        transform: translate(-50%,0%);
+    }
+    to{
+        transform: translate(-50%,-110%);
+    }
+}

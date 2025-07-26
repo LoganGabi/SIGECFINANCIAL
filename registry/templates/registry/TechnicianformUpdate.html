@@ -1,0 +1,246 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block content %}
+<!-- <script>
+    function configureForm(form, isActive) {
+        if (isActive) {
+            form.style.display = 'block';
+            form.querySelectorAll('input, select, textarea').forEach(function (field) {
+                field.removeAttribute('disabled'); // Habilita os campos
+                field.setAttribute('required', ''); // Adiciona "required"
+            });
+        } else {
+            form.style.display = 'none';
+            form.querySelectorAll('input, select, textarea').forEach(function (field) {
+                field.setAttribute('disabled', ''); // Desabilita os campos
+                field.removeAttribute('required'); // Remove "required"
+            });
+        }
+    }
+
+    window.onload = function () {
+        // Variável passada pelo backend indicando o formulário selecionado
+        var selectedForm = "{{ selected_form }}";
+
+        // Referência aos formulários
+        var form1 = document.getElementById('form1');
+        var form2 = document.getElementById('form2');
+        var form3 = document.getElementById('form3');
+
+        // Configura os formulários com base no tipo de cliente
+        if (selectedForm === 'Pessoa Fisica') {
+            configureForm(form1, true);
+            configureForm(form2, false);
+            configureForm(form3, false);
+            console.log(selectedForm)
+        } else if (selectedForm === 'Pessoa Juridica') {
+            configureForm(form1, false);
+            configureForm(form2, true);
+            configureForm(form3, false);
+            console.log(selectedForm)
+        } else if (selectedForm === 'Estrangeiro') {
+            configureForm(form1, false);
+            configureForm(form2, false);
+            configureForm(form3, true);
+            console.log(selectedForm)
+        } else {
+            // Caso nenhuma opção seja válida, oculta todos os formulários
+            configureForm(form1, false);
+            configureForm(form2, false);
+            configureForm(form3, false);
+            console.log('nenhuma opção válida')
+            console.log('nenhuma opção válida')
+            console.log('nenhuma opção válida')
+        }
+    };
+</script> -->
+<body data-selected-form="{{ selected_form }}">
+    <div class="content">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <h4 class="mt-5 mb-5 c-adapted">Atualização de Cliente</h4>
+
+            <!-- Formulário 1: Pessoa Física -->
+            <div id="form1" style="display: none;">
+                <fieldset>
+                    <legend class="mt-12">
+                        <h6>Informações Pessoais - Pessoa Física</h6>
+                    </legend>
+
+                    <div class="form-margin row">
+
+                        <div class="row">
+                            <div class="col">
+                                <label for="">{{form_Person.WorkPhone.label}}</label>
+                                {{form_Person.WorkPhone}}
+                            </div>
+            
+                            <div class="col">
+                                <label for="">{{form_Person.PersonalPhone.label}}</label>
+                                {{form_Person.PersonalPhone}}
+                            </div>
+            
+                            <div class="col">
+                                <label for="">{{form_Person.site.label}}</label>
+                                {{form_Person.site}}
+                            </div>
+            
+                            <div class="col">
+                                <label for="">{{form_Person.salesman.label}}</label>
+                                {{form_Person.salesman}}
+                            </div>
+            
+                            <div class="col">
+                                <label for="">{{form_Person.creditLimit.label}}</label>
+                                {{form_Person.creditLimit}}
+                            </div>  
+                         </div>
+        
+                    </div>
+
+                    <div class="form-margin row">
+                        <div class="row">
+                            <div class="col-xl-5">
+                                <label for="">{{ form_fisicPerson.name.label }}</label>
+                                {{ form_fisicPerson.name }}
+                            </div>
+                            <div class="col-xl-3">
+                                <label for="">{{ form_fisicPerson.cpf.label }}</label>
+                                {{ form_fisicPerson.cpf }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <label for="">{{ form_fisicPerson.rg.label }}</label>
+                                {{ form_fisicPerson.rg }}
+                            </div>
+                            <div class="col-xl-2">
+                                <label for="">{{ form_fisicPerson.dateOfBirth.label }}</label>
+                                {{ form_fisicPerson.dateOfBirth }}
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- Formulário 2: Pessoa Jurídica -->
+            <div id="form2" style="display: none;" class="form-margin row">
+                <legend class="mt-12">
+                    <h6>Informações Pessoais - Pessoa Jurídica</h6>
+                </legend>
+                <div class="row">
+
+                    <div class="col-xl-4">
+                        <label for="">{{form_legalPerson.fantasyName.label}}</label>
+                        {{form_legalPerson.fantasyName}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.cnpj.label}}</label>
+                        {{form_legalPerson.cnpj}}
+                    </div>
+
+                    <div class="col-xl-5">
+                        <label for="">
+                            {{form_legalPerson.socialReason.label}}
+                        </label>
+                        {{form_legalPerson.socialReason}}
+                    </div>
+                   
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.StateRegistration.label}}</label>
+                        {{form_legalPerson.StateRegistration}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.typeOfTaxpayer.label}}</label>
+                        {{form_legalPerson.typeOfTaxpayer}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for="">{{form_legalPerson.suframa.label}}</label>
+                        {{form_legalPerson.suframa}}
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label for=""> {{form_legalPerson.Responsible.label}}</label>
+                        {{form_legalPerson.Responsible}}
+                    </div>
+                   
+
+                </div>
+                <!-- {{ form_legalPerson.as_p }} -->
+            </div>
+
+            <!-- Formulário 3: Estrangeiro -->
+            <div id="form3" style="display: none;" class="form-margin row">
+                <!-- <h3>Formulário 3: Estrangeiro</h3> -->
+                <legend class="mt-12">
+                    <h6>Informações Pessoais - Pessoa Estrangeira</h6>
+                </legend>
+                <div class="row">
+                    
+                    <div class="col-xl-4">
+                        <label for="">{{ form_foreigner.name_foreigner.label }}</label>
+                        {{form_foreigner.name_foreigner}}
+                    </div>
+                    
+                    <div class="col-xl-3">
+                        <label for="">{{form_foreigner.num_foreigner.label}}</label>
+                        {{form_foreigner.num_foreigner}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cadastro tabela pessoa -->
+            <!-- {{ form_Person.as_p }} -->
+
+            <div class="row mb-5 mt-5">
+                <fieldset>
+                    <legend>
+                        <h6>Endereço</h6>
+                    </legend>
+                    <div class="form-margin row">
+                        <div class="row">
+                            <div class="col-xl-2">
+                                <label for="">{{ form_address.cep.label }}</label>
+                                {{ form_address.cep }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <label for="">{{ form_address.country.label }}</label>
+                                {{ form_address.country }}
+                            </div>
+                            <div class="col-xl-1">
+                                <label for="">{{ form_address.uf.label }}</label>
+                                {{ form_address.uf }}
+                            </div>
+                            <div class="col-xl-3">
+                                <label for="">{{ form_address.city.label }}</label>
+                                {{ form_address.city }}
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <br><br>
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit"  class="btn bg-adapted ">Enviar</button>
+                </div>
+                
+            </div>
+        </form>
+    </div>
+</body>
+<script src="{% static 'js/updateform.js' %}"></script>
+{% endblock %}

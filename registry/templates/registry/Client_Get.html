@@ -1,0 +1,127 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+        {% endblock %}
+        <title>Formulário</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <main >
+            {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+                <a href="{% url 'Client' %}">
+                    <button class="btn btn-voltar">Voltar</button>
+                </a>
+                <table>
+                    <tbody id="results">
+                        <tr>
+                            <td>Codigo do Cliente</td>
+                            <td>{{ client.id }}</td>
+                        </tr>
+                        {% if client.id_FisicPerson_fk %}
+                        <tr>
+                            <td>Nome</td>
+                            <td>{{ client.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>CPF</td>
+                            <td>{{ client.cpf }}</td>
+                        </tr>
+                        <tr>
+                            <td>Registro Geral - RG</td>
+                            <td>{{ client.rg }}</td>
+                        </tr>
+                        <tr>
+                            <td>Data de Nascimento</td>
+                            <td>{{ client.dateOfBirth }}</td>
+                        </tr>
+
+
+                        {% elif client.id_LegalPerson_fk %}
+                        <tr>
+                            <td>Nome</td>
+                            <td>{{ client.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>CNPJ</td>
+                            <td>{{ client.cnpj }}</td>
+                        </tr>
+                        <tr>
+                            <td>Razão Social</td>
+                            <td>{{ client.socialReason }}</td>
+                        </tr>
+                        <tr>
+                            <td>Inscrição Estadual</td>
+                            <td>{{ client.StateRegistration }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tipo de Contribuinte</td>
+                            <td>{{ client.typeOfTaxpayer }}</td>
+                        </tr>
+                        <tr>
+                            <td>Inscrição Municipal</td>
+                            <td>{{ client.MunicipalRegistration }}</td>
+                        </tr>
+                        <tr>
+                            <td>SUFRAMA</td>
+                            <td>{{ client.suframa }}</td>
+                        </tr>
+                        <tr>
+                            <td>Nome do Responsavel</td>
+                            <td>{{ client.Responsible }}</td>
+                        </tr>
+
+                        {% elif client.id_ForeignPerson_fk %}
+                        <tr>
+                            <td>Nome</td>
+                            <td>{{ client.name_foreigner }}</td>
+                        </tr>
+                        <tr>
+                            <td>Numero do Documento Estrangeiro</td>
+                            <td>{{ client.num_foreigner }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td>Telefone Pessoal</td>
+                            <td>{{ client.WorkPhone }}</td>
+                        </tr>
+                        <tr>
+                            <td>Telefone de Trabalho</td>
+                            <td>{{ client.PersonalPhone }}</td>
+                        </tr>
+                        <tr>
+                            <td>Site</td>
+                            <td>{{ client.Site }}</td>
+                        </tr>
+                        <tr>
+                            <td>Vendedor Encarregado</td>
+                            <td>{{ client.salesman }}</td>
+                        </tr>
+                        <tr>
+                            <td>Limite de Credito</td>
+                            <td>{{ client.CreditLimit }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+            {% endblock %}
+        </main>
+        
+        <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+        <script src="{% static 'js/mask.js' %}"></script>
+     
+    </body>
+</html>

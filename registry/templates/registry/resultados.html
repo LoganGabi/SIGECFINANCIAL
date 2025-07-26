@@ -1,0 +1,23 @@
+<tbody>
+    {% if clients %}
+        {% for client in clients %}
+            <tr>
+                <td>{{ client.id }}</td>
+                {% if client.id_FisicPerson_fk %}
+                    <td>{{ client.id_FisicPerson_fk.name }}</td>
+                {% elif client.id_LegalPerson_fk %}
+                    <td>{{ client.id_LegalPerson_fk.fantasyName }}</td>
+                {% elif client.id_ForeignPerson_fk %}
+                    <td>{{ client.id_ForeignPerson_fk.name_foreigner }}</td>
+                {% endif %}
+                <td>{{ client.PersonalPhone|default:"N/A" }}</td>
+                <td>{{ client.WorkPhone|default:"N/A" }}</td>
+                <td><a href="/client-detail/{{ client.id }}/">Detalhes</a></td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="5" style="text-align: center;">Nenhum resultado encontrado</td>
+        </tr>
+    {% endif %}
+</tbody>
