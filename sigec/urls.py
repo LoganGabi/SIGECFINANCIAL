@@ -6,7 +6,7 @@ urlpatterns = [
     path('', include('login.urls')), 
     path('', include('config.urls')),
     path('', include('registry.urls')),
-    # path('', include('finance.urls')),
+    path('', include('finance.urls')),
 
 
 ]

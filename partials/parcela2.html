@@ -1,0 +1,128 @@
+{% load static %}
+<style>
+    .td{
+        margin: 5px;
+    }
+</style>
+<div class="form-row">
+    <table class="table" id="paymentMethod_account">
+        <thead>
+            <tr>
+                <th>{{ form_Accounts.numberOfInstallments.label }}</th>
+                <th>{{ form_Accounts.date_init.label }}</th>
+                <th>{{ form_Accounts.installment_Range.label }}</th>
+                <th>{{ form_Accounts.totalValue.label }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ form_Accounts.numberOfInstallments }}</td>
+                <td>
+                    <div class="input-group date" data-provide="datepicker" id="date_init">
+                        {{ form_Accounts.date_init }}
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ form_Accounts.installment_Range }}</td>
+                <td>{{ form_Accounts.totalValue }}</td>
+                <td><button id="generate" type="button">GERAR</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="payment-method-container">
+    {{ form_payment_account.management_form }}
+    <div > <!-- style="display: none;" -->
+    {% for form in form_payment_account %}
+        <div class="form-row">
+            <table class="table" id="installment">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            {{form.forma_pagamento.label}}
+                        </th>
+                        <th scope="col">
+                            {{form.expirationDate.label}}
+                        </th>
+                        <th scope="col">
+                            {{ form.days.label}}
+                        </th>
+                        <th scope="col">
+                            {{form.value.label}}
+                        </th>
+                        <th id="th_one" scope="col">
+                            {{form.DELETE.label}}
+                        </th>
+                    </tr>
+                </thead>
+                    <tbody>
+                        <tr id="tr_one">
+                            <td id="account">{{form.forma_pagamento}}</td>
+                            <td>
+                                <div class="input-group date" data-provide="datepicker">
+                                    {{form.expirationDate|date:'d/m/Y'}}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{form.days}}</td>
+                            <td>{{form.value}}</td>
+                            <td>{{form.DELETE}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+            {% endfor %}
+    </div>
+</div>
+
+<!-- <div id="payment-method-container"> -->
+<template id="empty-payment-method-form">
+
+    <div id="payment-method-container">
+        {{ form_payment_account.management_form }}
+        {% for form in form_payment_account %}
+            <div class="form-row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{ form.forma_pagamento.label }}</th>
+                            <th>{{ form.expirationDate.label }}</th>
+                            <th>{{ form.days.label }}</th>
+                            <th>{{ form.value.label }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ form.forma_pagamento }}</td>
+                            <td>
+                                <div class="input-group date" data-provide="datepicker">
+                                    {{ form.expirationDate }}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ form.days }}</td>
+                            <td>{{ form.value }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+</template>
+
+<script src="{% static 'js/agora_vai.js' %}"></script>
+<script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+<script src="{% static 'js/mask.js' %}"></script>
+<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
+<script src="{% static 'js/date.js' %}"></script>

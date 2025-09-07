@@ -1,0 +1,159 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+    {% endblock %}
+    <title>Formulário</title>
+    {% bootstrap_css %}
+</head>
+<body>
+    {% block content %}
+    <div class="content">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <h4 class="mt-5 mb-5 c-adapted">Cadastro de {{tipo_conta}} </h4>
+            
+            {{ form_Accounts.fornecedor.label }}
+            {{ form_Accounts.fornecedor }}
+                 
+            {{form_Accounts.data_da_compra.label}}
+            <td>
+                <div class="input-group date" data-provide="datepicker" id="date_purchase">
+                    {{ form_Accounts.data_da_compra }} <!--  erro aq -->
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                </div>
+            </td>  
+                                
+            <div id="payment-method-container">
+            <div class="form-row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                {{form_paymentMethodAccounts.forma_pagamento.label}}
+                            </th>
+                            <th scope="col">
+                                {{form_paymentMethodAccounts.expirationDate.label}}
+                            </th>
+                            <th scope="col">
+                                {{ form_paymentMethodAccounts.days.label}}
+                            </th>
+                            <th scope="col">
+                                {{form_paymentMethodAccounts.interestType.label}}
+                                {{form_paymentMethodAccounts.interestType}}
+                            </th>
+                            <th scope="col">
+                                {{form_paymentMethodAccounts.fineType.label}}
+                                {{form_paymentMethodAccounts.fineType}}
+                            </th>
+                            <th scope="col">
+                                {{form_paymentMethodAccounts.value_old.label}}
+                            </th>
+                            <th scope="col">
+                                {{form_paymentMethodAccounts.value.label}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <td>{{form_paymentMethodAccounts.forma_pagamento}}</td>
+                            <td>
+                                <div class="input-group date" data-provide="datepicker" id="payment_method">
+                                    {{form_paymentMethodAccounts.expirationDate}}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{form_paymentMethodAccounts.days}}</td>
+                            <td>{{form_paymentMethodAccounts.interest}}</td>
+                            <td>{{form_paymentMethodAccounts.fine}}</td>
+                            <td>{{form_paymentMethodAccounts.value_old}}</td>
+                            <td>{{form_paymentMethodAccounts.value}}</td>
+                                
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        <!-- <button type="button" onclick="addPaymentMethod()" class="btn btn-outline-success mb-5">Adicionar Forma de Pagamento</button> -->
+
+        <!-- <div class="row">
+
+            <div class="col">
+                <label for="">{{form_Accounts.observacao_pessoas.label}}</label>
+                {{form_Accounts.observacao_pessoas}}
+            </div>
+
+            <div class="col">
+                <label for="">{{form_Accounts.observacao_sistema.label}}</label>
+                {{form_Accounts.observacao_sistema}}
+            </div>
+        </div> -->
+
+            <br><br>
+            <div class="row">
+                <div class="col text-end">
+                    <button type="submit"  class="btn bg-adapted">Enviar</button>
+                </div>
+                
+            </div>
+            
+        </form>
+    </div>
+
+    <template id="empty-payment-method-form">
+        <div class="form-row" id='del' >
+            <!-- Clona o formulário vazio de payment_method_formset -->
+            <!-- {{ payment_method_formset.empty_form.as_p }} -->
+            <table class="table" id='table'>
+                <thead>
+                    <tr>
+                    </tr>
+                </thead>
+
+                <tbody> 
+                    <tr>
+                        <td>{{ form_payment_account.empty_form.forma_pagamento }}</td>
+                        <td>
+                            <div id="date_account" class="input-group date" data-provide="datepicker">
+                                {{form_payment_account.empty_form.expirationDate|date:"d/m/y"}}
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ form_payment_account.empty_form.days }}</td>
+                        <td>{{form_payment_account.empty_form.value}}</td>
+                        <td>
+                            <label for="">Deletar</label>
+                            {{form_payment_account.empty_form.DELETE}}
+                        </td>
+                    </tr>
+                </tbody>
+              </table>
+        </div>
+    </template>
+
+    <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+    <script src="{% static 'js/mask.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/interest.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/interest_fine.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/installments.js' %}"></script> -->
+    <script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/date.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/additem.js' %}"></script>     
+
+    {% endblock %}
+</body>
+</html>
+    

@@ -1,0 +1,126 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    
+    <title>Formulário</title>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+</head>
+<body>
+    <div class="content align-items-center justify-content-center ">
+        <div class="bg-light" style="">
+    
+            <div class="card shadow p-4" style="max-width: 1000px; width: 100%; max-height: 900px;">
+                <form method="post">
+        
+                    {% csrf_token %}
+        
+                    <div class="row align-items-center gap-2">
+                        <a href="
+                            {% if tipo_conta == "Pagar" %}        
+                                {% url 'AccountsPayable' %}
+                            {% elif tipo_conta == "Receber" %}
+                                {% url 'AccountsReceivable' %}
+                            {% else %}
+                                /
+                            {% endif %}
+                            ">
+                            <button type="button" class="btn btn-voltar">
+                                <i class="fas fa-arrow-left"></i> 
+                            </button>
+                        </a> 
+                        <h4 class="c-adapted text-center col mb-3">Cadastro de {{ Contas }}</h4>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label class="form-label">
+                                {{ form_Accounts.plannedAccount.label }}
+                            </label>
+                            {{ form_Accounts.plannedAccount }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label class="form-label">
+                                {{ form_Accounts.description.label }}
+                            </label>
+                            {{ form_Accounts.description }}
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label class="form-label">  
+                                {{ form_Accounts.pessoa_id.label }}
+                            </label>
+                            {{ form_Accounts.pessoa_id }}    
+                        </div>
+                        <div class="mb-3 col">
+                            <label class="form-label"> {{ form_Accounts.chartOfAccounts.label }}</label>
+                            {{ form_Accounts.chartOfAccounts }}
+                        </div>
+                    </div>
+                    
+
+                    <div class="row">
+                         <div class="mb-3 col">
+                            <label class="form-label">  {{ form_Accounts.documentNumber.label }}</label>
+                            {{ form_Accounts.documentNumber }}
+                        </div>
+
+                        <div class="mb-3 col">
+                            {{form_Accounts.date_account.label}}
+                            <div class="input-group date" data-provide="datepicker" id="date_account" class="" style="max-width: 250px;">
+                                {{ form_Accounts.date_account }}
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    
+                    {% include 'parcela.html' %}
+                    <div class=" text-center">
+                        <button type="submit" class=" btn bg-adapted">Enviar</button>
+                    </div>
+
+                </form>
+            </div>
+        
+        </div>
+    </div>
+</body>
+
+
+</html>
+
+<script src="{% static 'js/additem.js' %}"></script>
+<script>
+    const plannedAccount_id = document.getElementById('id_plannedAccount');
+    
+    plannedAccount_id.addEventListener('change',()=>{
+        const url = new URL(window.location.href);
+        url.searchParams.set('plannedAccount', plannedAccount_id.checked ? 'true' : 'false');
+        window.location.href = url.toString();
+        
+    })
+</script>
+{% endblock %}

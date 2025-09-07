@@ -1,0 +1,116 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+
+        {% endblock %}
+        <title>Formulário</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <main >
+            {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <div id="messageContainer"></div>  <!-- Contêiner para a mensagem -->
+                <a href="{% url 'AccountsPayable' %}">
+                    <button class="btn btn-voltar">Voltar</button>
+                </a> 
+                <table>
+                    <tbody id="results">
+                        <tr>
+                            <td>Nome do Cliente</td>
+                            <td>{{ client.pessoa_id }}</td>
+                        </tr>
+                        <tr>
+                            <td>Plano de Contas</td>
+                            <td>{{ client.chartOfAccounts }}</td>
+                        </tr>
+                        <tr>
+                            <td>Numero do Documento</td>
+                            <td>{{ client.documentNumber }}</td>
+                        </tr>
+                        <tr>
+                            <td>Data da Conta</td>
+                            <td>{{ client.date_account|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Numero de Parcelas</td>
+                            <td>{{ client.numberOfInstallments }}</td>
+                        </tr>
+                        <tr>
+                            <td>Intervalo de Parcelas</td>
+                            <td>{{ client.installment_Range }}</td>
+                        </tr>
+                        <tr>
+                            <td>Data da Parcela</td>
+                            <td>{{ client.date_init|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Valor Total</td>
+                            <td>{{ client.totalValue }}</td>
+                        </tr>
+                        <tr>
+                            <td>Forma de Pagamento</td>
+                            <td>{{ client.forma_pagamento }}</td>
+                        </tr>
+                        <tr>
+                            <td>Data de Vencimento</td>
+                            <td>{{ client.expirationDate|date:"d/m/Y" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Valor da Parcela</td>
+                            <td>{{ client.value_old }}</td>
+                        </tr>
+                        {% if client.peopleWatching != '' %}
+                        <tr>
+                            <td>Observação Pessoa</td>
+                            <td>{{ client.peopleWatching }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if client.systemWatching != '' %}
+                        <tr>
+                            <td>Observação Systema</td>
+                            <td>{{ client.systemWatching }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if client.interest != none %}
+                        <tr>
+                            <td>Porcentagem de Juros</td>
+                            <td>{{ client.interest }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if client.fine != none %}
+                        <tr>
+                            <td>Porcentagem de Multa</td>
+                            <td>{{ client.fine }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if client.value_old != client.value %}
+                        <tr>
+                            <td>Valor da Parcela com encargos</td>
+                            <td>{{ client.value }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+        {% endblock %}
+        </main>
+        
+        <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+        <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+        <script src="{% static 'js/mask.js' %}"></script>
+     
+    </body>
+</html>

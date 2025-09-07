@@ -1,0 +1,135 @@
+{% load static %}
+<style>
+    .td{
+        margin: 5px;
+    }
+    /* th{
+
+    height: 28px;
+    padding: 4px 8px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: normal;
+
+    } */
+    
+</style>
+<div class="form-row">
+    <table class="table" id="paymentMethod_account">
+        <thead class="">
+            <tr>
+                <th>{{ form_Accounts.numberOfInstallments.label }}</th>
+                <th>{{ form_Accounts.date_init.label }}</th>
+                <th>{{ form_Accounts.installment_Range.label }}</th>
+                <th>{{ form_Accounts.totalValue.label }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ form_Accounts.numberOfInstallments }}</td>
+                <td style="padding-right: 40px;">
+                    <div class="input-group date" data-provide="datepicker" id="date_init" style="max-width: 250px;">
+                        {{ form_Accounts.date_init }}
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ form_Accounts.installment_Range }}</td>
+                <td>{{ form_Accounts.totalValue }}</td>
+                <td><button id="generate" type="button" class="btn btn-warning">GERAR</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+    
+<!-- <form method="POST"> 
+    {% csrf_token %}   -->
+{{ form_payment_account.management_form }}
+<input type="hidden" name="new_form" value="0" id="new_form"/>
+<div> <!-- style="display: none;" -->
+    <div class="form-row">
+        <table class="table" id="installment">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        {{form.paymentPurpose.label}}
+                    </th>
+                    <th scope="col">
+                        {{form.forma_pagamento.label}}
+                    </th>
+                    <th scope="col">
+                        {{form.expirationDate.label}}
+                    </th>
+                    <th scope="col">
+                        {{ form.days.label}}
+                    </th>
+                    <th scope="col">
+                        {{form.value.label}}
+                    </th>
+                    <th scope="col"> {{form.activeCredit.label}}</th>
+                    <th id="th_one" scope="col">
+                        {{form.DELETE.label}}
+                    </th>
+                    
+                </tr>
+            </thead>
+            <tbody id="payment-method-container">
+                {% for form in form_payment_account %}
+                    <!-- <tr id="tr_one">
+                        <td>{{ form.empty_form.forma_pagamento }}</td>
+                        <td>
+                            <div class="input-group date">
+                                {{ form.empty_form.expirationDate }}
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ form.empty_form.days }}</td>
+                        <td>{{ form.empty_form.value }}</td>
+                        <td> {{ form.empty_form.activeCredit }}
+                        <td>{{ form.empty_form.DELETE }}</td>
+                    </tr> -->
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- </form> -->
+
+<!-- <div id="payment-method-container"> -->
+
+    
+<template id="empty-payment-method-form">
+    <!-- {{ form_payment_account.management_form }} -->
+    {% for form in form_payment_account %}
+    <tr>
+        <td>{{ form.paymentPurpose }}</td>
+        <td>{{ form.forma_pagamento }}</td>
+        <td>
+            <div class="input-group date" data-provide="datepicker" id="empty-payment-method-form">
+                {{ form.expirationDate }}
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
+            </div>
+        </td>
+        <td>{{ form.days }}</td>
+        <td>{{ form.value }}</td>
+        <td style="display: none;">{{ form.activeCredit.as_hidden}}</td>
+        <td style="display: none;">{{ form.DELETE }}</td>
+    </tr>
+    {% endfor %}
+</template>
+
+<script type="module" src="{% static 'js/installments.js' %}"></script>
+<script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+<script src="{% static 'js/mask.js' %}"></script>
+<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'js/bootstrap-datepicker.pt-BR.js' %}"></script>
+<script src="{% static 'js/date.js' %}"></script>

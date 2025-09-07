@@ -1,0 +1,59 @@
+<div id="old-payment-method-form" >
+    {{ older_form_payment_account.management_form }}
+    
+    <div class="form-row">
+        
+        <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            {{older_form_payment_account.paymentPurpose.label}}
+                        </th>
+                        <th scope="col">
+                            {{older_form_payment_account.forma_pagamento.label}}
+                        </th>
+                        <th scope="col">
+                            {{older_form_payment_account.expirationDate.label}}
+                        </th>
+                        <th scope="col">
+                            {{older_form_payment_account.days.label}}
+                        </th>
+                        <th scope="col">
+                            {{older_form_payment_account.value.label}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in older_form_payment_account %}
+                        {% if form.instance.pk %}
+                            <input type="hidden" name="{{ form.prefix }}-id" value="{{ form.instance.id }}">
+                            <tr>
+                                <td>{{form.paymentPurpose}}</td>
+                                <td class="field_type_payment">{{form.forma_pagamento}}</td>
+                                <td style="width: 200px;">
+                                    <div class="input-group date" data-provide="datepicker">
+                                        {{form.expirationDate}}
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{form.days}}
+                                </td>
+                                <td>
+                                    {{form.value}}
+                                </td>
+                                <td>
+                                    {{form.activeCredit.as_hidden}}
+                                </td>
+                            <td>{{form.DELETE.as_hidden}}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+
+                </tbody>
+        </table>
+    </div>
+  
+</div>

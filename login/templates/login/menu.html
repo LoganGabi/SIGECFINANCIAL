@@ -107,10 +107,10 @@
                     <ul class="sub-menu">
                         {% if perms.finance.view_accounts and perms.finance.change_accounts %}
                         <li>
-                            <a href="><h5>Contas a Pagar</h5></a>
+                            <a href="{% url 'AccountsPayable' %}"><h5>Contas a Pagar</h5></a>
                         </li>
                         <li>
-                            <a href=""><h5>Contas a Receber</h5></a>
+                            <a href="{% url 'AccountsReceivable' %}"><h5>Contas a Receber</h5></a>
                         </li>
                         {% endif %}
                         {% if perms.finance.view_cashmovement  %}
