@@ -1,0 +1,84 @@
+{% extends 'login/menu.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Table.css' %}">
+        {% endblock  %}
+        <title>Formulário</title>
+    </head>
+    <body>
+        {% block content %}
+        <div class='content'>
+            <div class="position-absolute  start-50">
+                <div class="">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if "successPosition" in message.tags %}
+                            <div style="max-height: 50px; max-width: 400px;" class="successContainer"> 
+                                <div class="alert {{ message.tags }} alert-success ">
+                                    <strong>Sucesso!</strong>
+                                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, illum atque. Doloremque, dolor ipsum labore numquam quaerat doloribus, incidunt provident suscipit maiores dicta animi, itaque at reiciendis exercitationem assumenda odit?</p> -->
+                                {{ message }}
+    
+                                </div>
+                        
+                                
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="container">
+                <a href="{% url 'PositionForm' %}">
+                    <button class="btn btn-success">Cadastrar</button>
+                </a>
+                <div class="form-group">
+                    <input type="text" placeholder="Pesquisar..." class="search-input">
+                    <button class="search-button">Pesquisar</button>
+                </div>
+            </div>
+            <table >
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cargo</th>
+                        <th>Ativo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>  
+                {% for Position in Positions %}
+                <tr>
+                    <td>{{ Position.id }}</td>
+                    <td>{{ Position.name_position }}</td>
+                    <td>{{ Position.is_Active|yesno:"Sim,Não" }}</td>
+                    <td>
+                        <!-- <a href="{% url 'updatePosition' id_position=Position.id %}">
+                            <button>Editar</button>
+                        </a>
+                        <button class="delete-button" data-id="{{ Position.id }}" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button> -->
+                        <a href="{% url 'updatePosition' id_position=Position.id %}">
+                            <button class="btn" style="background-color: #117027;color: white;">Editar</button>
+                        </a>
+                        <form action="{% url 'deletePosition' id_position=Position.id %}" method="POST" style="display:inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: rgb(139, 16, 16);color: white;" onclick="return confirm('Tem certeza que deseja deletar este cliente?')">Deletar</button>
+                        </form>
+                        {% comment %} <button>Deletar</button> {% endcomment %}
+                        {% comment %} <button>Mais</button> {% endcomment %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div> 
+        {% endblock %}
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+    </html>

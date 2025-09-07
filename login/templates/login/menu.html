@@ -147,25 +147,29 @@
                         
                         {% if perms.config.view_paymentmethod %}
                             <li>
-                                <a href=""><h5>Forma de Pagamento</h5></a>
+                                <a href="{% url 'PaymentMethod' %}"><h5>Forma de Pagamento</h5></a>
                             </li>
                         {% endif %}
-                     
+                        
                         {% if perms.config.view_chartofaccounts %}
                             <li>
-                                <a href="">Plano de Contas</a>
+                                <a href="{% url 'ChartofAccounts'%}">Plano de Contas</a>
                             </li>
                         {% endif %}
-                    
-                        {% if perms.auth.view_permission and perms.auth.view_group %}
-                            <li>
-                                <a href=""><h5>Permissões</h5></a>
-                            </li>
-                        {% endif %}
+                        
+                        
                         {% if perms.auth.view_bank %}
                             <li>
-                                <a href=""><h5>Bancos</h5></a>
+                                <a href="{% url 'Bank' %}"><h5>Bancos</h5></a>
                             </li>
+                        {% endif %}
+                        {% if perms.auth.view_users %}
+                            {% comment %}
+                            <li>
+                                <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
+                            </li>
+                            <a href="{% url 'user_list' %}"><h5>Permissões</h5></a>
+                            {% endcomment %}
                         {% endif %}
                     </ul>
                 </li>

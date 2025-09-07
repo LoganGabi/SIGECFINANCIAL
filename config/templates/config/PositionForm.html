@@ -1,0 +1,59 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+        {% endblock %}
+        <title>Formulário</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <main>
+            {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <div class='center col'>
+                    
+                    <form action="." method='post' autocomplete='off'>
+                        {% csrf_token %}
+                        <div class="col d-flex  gap-4 ">
+                            <a href="{% url 'Position' %}">
+                                <button type="button" class="btn btn-voltar">
+                                    <i class="fas fa-arrow-left"></i> 
+                                </button>
+                            </a> 
+                        </div>
+                        <div class="card mt-5 text-center" style="margin-left: 25%;width: 40%;">
+                            <div class="card-body">
+                                <h5 class="card-title">Cargo</h5>
+
+                                <div class="row mt-5" >
+                                    <label for="" class="p-2">{{Position.name_position.label}}</label>
+                                    <div>
+                                        {{Position.name_position}}
+                                    </div>
+                                </div>
+
+                                <div class="p-5">
+                                    <button Type='submit'  class="btn bg-adapted ">Cadastrar</button>  
+                                </div>
+                               
+                            </div>
+                        </div>
+   
+                    </form>
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+        
+        
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>
