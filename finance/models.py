@@ -1,6 +1,6 @@
 from django.db import models
 from registry.models import Person
-from config.models import ChartOfAccounts, PaymentMethod
+from config.models import Bank, ChartOfAccounts, PaymentMethod
 from django.utils import timezone
 from django.contrib.auth.models import User 
 from auditlog.registry import auditlog
@@ -170,6 +170,7 @@ class PaymentMethod_Accounts(models.Model):
 
 class CaixaDiario(models.Model): #abertura de caixa
     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    bank = models.ForeignKey(Bank,null =False,blank=False)
     saldo_inicial = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     saldo_final = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     criado_em = models.DateTimeField(auto_now_add=True)

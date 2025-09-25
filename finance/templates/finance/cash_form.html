@@ -1,0 +1,65 @@
+{% extends 'login/menu.html' %}
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'css/Forms.css' %}">
+            <link rel="stylesheet" href="{% static 'css/custom-styles.css' %}">
+        {% endblock %}
+        <title>Formulário</title>
+        {% bootstrap_css %}
+    </head>
+    <body>
+        <main>
+            {% bootstrap_messages %}
+            {% block content %}
+            <div class='content'>
+                <div class='center col'>
+
+                    <form action="." method='post' autocomplete='off' class="row">
+                        {% csrf_token %}
+                        <div class="col d-flex gap-4">
+                            <a href="{% url 'Cash_list' %}">
+                                <button type="button" class="btn btn-voltar">
+                                    <i class="fas fa-arrow-left"></i> 
+                                </button>
+                            </a> 
+                        </div>
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-4 col-md-6 col-sm-8 col-10">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Abertura de Caixa</h5>
+                        
+                                            <div class="mt-4">
+                                                <label for="" class="p-2">
+                                                    {{cash.saldo_inicial.label_tag}}
+                                                </label>
+                                                <div class="p-2 ">
+                                                    {{cash.saldo_inicial}}
+                                                </div>
+                                            </div>
+                        
+                                            <div class="p-4">
+                                                <button type="submit" class="btn  bg-adapted w-50">Cadastrar</button>   
+                                            </div>
+                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>          
+                    </form>
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+        
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    </body>
+</html>

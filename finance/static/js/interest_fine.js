@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const edit = compair_interest_fine(ValueOLD.value)
 
         console.log('Este é o edit');
-        console.log(edit);
+        console.log(edit);  
         TotalValue.value = edit;
     })
     

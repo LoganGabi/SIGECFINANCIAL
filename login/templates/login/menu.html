@@ -115,19 +115,15 @@
                         {% endif %}
                         {% if perms.finance.view_cashmovement  %}
                         <li>
-                            <a href=""><h5>Fluxo de Caixa</h5></a>
+                            <a href="{% url 'cashFlow' %}"><h5>Fluxo de Caixa</h5></a>
                         </li>
                         {% endif %}
                         {% if perms.finance.view_caixadiario  %}
                             <li>
-                                <a href=""><h5>Caixa</h5></a>
+                                <a href="{% url 'Cash_list' %}"><h5>Caixa</h5></a>
                             </li>
                         {% endif %}
-                        {% if perms.finance.view_accounts and perms.registry.view_person  %}
-                            <li>
-                                <a href=""><h5>Credito</h5></a>
-                            </li>
-                        {% endif %}
+                        
                     </ul>
                 </li>
                 {% endif %}

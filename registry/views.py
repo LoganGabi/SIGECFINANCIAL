@@ -58,8 +58,9 @@ def Client_Create(request):
                 person.id_FisicPerson_fk = fisicPerson
                 
                 if person.email and person.password: 
-                    person.id_user_fk = u
+                    
                     u = createUser(person.id_FisicPerson_fk.name, person.email, person.password)
+                    person.id_user_fk = u
                     log_create_db(log, info_old=f'Cadastrou o Usuario {person.id_FisicPerson_fk.name}')
                 else:
                     log_create_db(log, info_old=f'Cadastrou a Pessoa {person.id_FisicPerson_fk.name}')
@@ -265,6 +266,133 @@ def buscar_clientes(request):
     return JsonResponse(response_data)
 
 
+@login_required
+@transaction.atomic
+def update_client(request, id_client):
+    # Buscar o cliente e os dados relacionados
+    person = get_object_or_404(Person, id=id_client)
+
+    # As FKs já retornam as instâncias ou None
+    fisicPerson = person.id_FisicPerson_fk
+    legalPerson = person.id_LegalPerson_fk
+    foreigner   = person.id_ForeignPerson_fk
+    address     = person.id_address_fk
+    usuario     = person.id_user_fk
+
+    # Identifica o tipo atual
+    if fisicPerson:
+        selected_form = "Pessoa Fisica"
+    elif legalPerson:
+        selected_form = "Pessoa Juridica"
+    elif foreigner:
+        selected_form = "Estrangeiro"
+    else:
+        selected_form = ""
+        address = None
+
+    if request.method == "POST":
+        log = log_db(request, action='u' ,type='01')
+        print('\n\n\n passou pelo log principal\n\n\n')
+        # Tipo novo informado no formulário
+        tipo_novo = request.POST.get("form_choice")
+
+
+        # Recria os formulários com base no novo tipo
+        form_address = AddressForm(request.POST, instance=address)
+        form_Person = PersonForm(request.POST, instance=person)
+
+        form_fisicPerson = FisicPersonForm(request.POST)
+        form_legalPerson = LegalPersonModelForm(request.POST)
+        form_foreigner = ForeignerModelForm(request.POST)
+
+        # Detecta troca de tipo e deleta os registros antigos
+        if selected_form != tipo_novo:
+            if fisicPerson:
+                # updt = compair(fisicPerson, form_fisicPerson)
+                log = log_db(request, 'Deletou todos os dados de Pessoa Fisica', type='01')
+                # log_upd_db(log, updt)
+                fisicPerson.delete()
+                person.id_FisicPerson_fk = None
+            if legalPerson:
+                # updt = compair(legalPerson, form_legalPerson)
+                log = log_db(request, 'Deletou todos os dados de Pessoa Juridica', type='01')
+                # log_upd_db(log, updt)
+                legalPerson.delete()
+                person.id_LegalPerson_fk = None
+            if foreigner:
+                print("POST recebido:", request.POST)
+
+                # updt = compair(foreigner, form_foreigner)
+                log = log_db(request, 'Deletou todos os dados de Estrangeiro', type='01')
+                # log_upd_db(log, updt)
+                print('\n\n\n passou pelo log de deleção\n\n\n')
+                foreigner.delete()
+                person.id_ForeignPerson_fk = None
+            person.save()
+
+            # Reseta variáveis para reconstrução
+            fisicPerson = None
+            legalPerson = None
+            foreigner = None
+
+        if form_address.is_valid():
+            updt = compair(address, form_address)
+            if updt: log_upd_db(log, updt)
+            address = form_address.save()
+
+        if form_Person.is_valid():
+            person = form_Person.save(commit=False)
+
+            # Salva novo tipo de pessoa com endereço atualizado
+            if tipo_novo == "Pessoa Fisica" and form_fisicPerson.is_valid():
+                fisicPerson = form_fisicPerson.save(commit=False)
+                if person.email and person.password: 
+                    updateUser(usuario,person.id_FisicPerson_fk.name, person.email, person.password)
+                    
+                    log_upd_db(log, info_old=f'editou o Usuario {person.id_FisicPerson_fk.name}')
+                fisicPerson.save()
+                
+
+            elif tipo_novo == "Pessoa Juridica" and form_legalPerson.is_valid():
+                legalPerson = form_legalPerson.save(commit=False)
+                if person.email and person.password: 
+                    new_user = updateUser(usuario,person.id_LegalPerson_fk.fantasyName, person.email, person.password)
+
+                    log_upd_db(log, new_user)
+                else:
+                    legalPerson.save()
+                    person.id_LegalPerson_fk = legalPerson
+
+            elif tipo_novo == "Estrangeiro" and form_foreigner.is_valid():
+                foreigner = form_foreigner.save(commit=False)
+                if updateUser(usuario, username=person.id_ForeignPerson_fk.name_foreigner, email=person.email, password=person.password):
+                    new_user=updateUser(usuario, username=person.id_ForeignPerson_fk.name_foreigner, email=person.email, password=person.password)
+                    log_upd_db(log, new_user)
+                foreigner.save()
+                person.id_ForeignPerson_fk = foreigner
+                
+        
+            person.save()
+            messages.success(request, "Cliente atualizado com sucesso.", extra_tags="successClient")
+            return redirect('Client')
+    else:
+        # Popula formulários com as instâncias carregadas
+        form_address      = AddressForm(instance=address)
+        form_fisicPerson  = FisicPersonForm(instance=fisicPerson)
+        form_legalPerson  = LegalPersonModelForm(instance=legalPerson)
+        form_foreigner    = ForeignerModelForm(instance=foreigner)
+        form_Person       = PersonForm(instance=person)
+
+    context = {
+        'form_address': form_address,
+        'form_fisicPerson': form_fisicPerson,
+        'form_legalPerson': form_legalPerson,
+        'form_foreigner': form_foreigner,
+        'form_Person': form_Person,
+        'selected_form': selected_form,
+        'type': 'update'
+    }
+    return render(request, 'registry/Clientform.html', context)
 
 @login_required
 @transaction.atomic
@@ -288,3 +416,68 @@ def delete_client(request, id_client): #(FUNCIONANDO)
     messages.success(request,"Cliente deletado com sucesso.",extra_tags="successClient")
     return redirect('Client')
 
+@login_required
+def get_client(request, id_client):
+    person = Person.objects.get(id=id_client)
+    log = Log.objects.create(
+            user=request.user,
+            date=datetime.now(),
+            action='r',
+            type='01'
+        )
+    if person.id_FisicPerson_fk:
+        client = {
+                'id': person.id,
+                'name': ( person.id_FisicPerson_fk.name if person.id_FisicPerson_fk else 'Nome não disponível' ),
+                'cpf': ( person.id_FisicPerson_fk.cpf if person.id_FisicPerson_fk else 'Cadastro de Pessoa Fisica - CPF indisponível'),
+                'rg': ( person.id_FisicPerson_fk.rg if person.id_FisicPerson_fk else 'Registro Geral - RG indisponível'),
+                'dateOfBirth': ( person.id_FisicPerson_fk.dateOfBirth if person.id_FisicPerson_fk else 'Data de Aniversario indisponível'),
+                'WorkPhone': person.WorkPhone,
+                'PersonalPhone': person.PersonalPhone,
+                'Site': person.site if person.site else 'Não Informado',
+                'salesman': person.salesman if person.salesman else 'Não Informado',
+                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
+                'id_FisicPerson_fk': 1,
+                }
+        log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_FisicPerson_fk.name}')
+        
+    if person.id_LegalPerson_fk:
+        client = {
+                'id': person.id,
+                'name': ( person.id_LegalPerson_fk.fantasyName if person.id_LegalPerson_fk else 'Nome indisponível'),
+                'cnpj':( person.id_LegalPerson_fk.cnpj if person.id_LegalPerson_fk else 'CNPJ indisponível'),
+                'socialReason':( person.id_LegalPerson_fk.socialReason if person.id_LegalPerson_fk else 'Razão Social indisponível'),
+                'StateRegistration':( person.id_LegalPerson_fk.StateRegistration if person.id_LegalPerson_fk else 'Inscrição Estadual indisponível'),
+                'typeOfTaxpayer':( person.id_LegalPerson_fk.typeOfTaxpayer if person.id_LegalPerson_fk else 'Tipo de Contribuinte indisponível'),
+                'MunicipalRegistration':( person.id_LegalPerson_fk.MunicipalRegistration if person.id_LegalPerson_fk else 'Inscrição Municipal indisponível'),
+                'suframa':( person.id_LegalPerson_fk.suframa if person.id_LegalPerson_fk else 'Numero da Suframa indisponível'),
+                'Responsible':( person.id_LegalPerson_fk.Responsible if person.id_LegalPerson_fk else 'Nome do Responsavel indisponível'),
+                'WorkPhone': person.WorkPhone,
+                'PersonalPhone': person.PersonalPhone,
+                'Site': person.site if person.site else 'Não Informado',
+                'salesman': person.salesman if person.salesman else 'Não Informado',
+                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
+                'id_LegalPerson_fk': 1,
+            }
+        log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_LegalPerson_fk.fantasyName}')
+               
+    if person.id_ForeignPerson_fk:
+        client = {
+                'id': person.id,
+                'name_foreigner': ( person.id_ForeignPerson_fk.name_foreigner if person.id_ForeignPerson_fk else 'Nome não disponível'),
+                'num_foreigner': ( person.id_ForeignPerson_fk.num_foreigner if person.id_ForeignPerson_fk else 'Numero do Documento Estrangeiro não disponível'),
+                'WorkPhone': person.WorkPhone,
+                'PersonalPhone': person.PersonalPhone,
+                'Site': person.site if person.site else 'Não Informado',
+                'salesman': person.salesman if person.salesman else 'Não Informado',
+                'CreditLimit': person.creditLimit if person.creditLimit else 'Não Informado',
+                'id_ForeignPerson_fk': 1,
+            }
+        log_info = Info_logs.objects.create(log_principal=log, info_old=f'Visualizou a Pessoa {person.id_ForeignPerson_fk.name_foreigner}')
+        
+    
+    log.save() ,log_info.save()
+        
+    return render(request, 'registry/Client_Get.html', {'client': client})
+
+### TECNICOS

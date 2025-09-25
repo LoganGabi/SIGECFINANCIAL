@@ -16,5 +16,9 @@ urlpatterns = [
     path('AccountsReceivable/get/<int:id_Accounts>/', get_AccountsReceivable, name='get_AccountsReceivable'),
 
     path('accounts_list/<int:id_accounts>/',Accounts_list,name='Accounts_list'),
-    path('delete_payments/<int:id>/',deletePayment_Accounts,name='delete_payments')
+    path('delete_payments/<int:id>/',deletePayment_Accounts,name='delete_payments'),
+    path('cash/c/', Cash_registry, name='Cash_registry'),
+    path('cash/', Cash_list, name='Cash_list'),
+    path('cash/<int:pk>/', cash_close, name='Cash_Close'),
+    path('cashFlow/get/', cashFlow, name='cashFlow')
 ]
