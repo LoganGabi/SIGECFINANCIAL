@@ -20,5 +20,6 @@ urlpatterns = [
     path('cash/c/', Cash_registry, name='Cash_registry'),
     path('cash/', Cash_list, name='Cash_list'),
     path('cash/<int:pk>/', cash_close, name='Cash_Close'),
-    path('cashFlow/get/', cashFlow, name='cashFlow')
+    path('cashFlow/get/', cashFlow, name='cashFlow'),
+    path('cashFlow/<int:pk>/',cashFlowById,name='cashFlowById')
 ]

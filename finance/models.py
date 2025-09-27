@@ -166,11 +166,15 @@ class PaymentMethod_Accounts(models.Model):
         null=True,
         blank=True
     )
+    status = models.BooleanField(
+        verbose_name='statusPayment',
+        default=True
+    )
     historico = AuditlogHistoryField()
 
 class CaixaDiario(models.Model): #abertura de caixa
     usuario_responsavel = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    bank = models.ForeignKey(Bank,null =False,blank=False)
+    bank = models.ForeignKey(Bank,on_delete=models.CASCADE,null =False,blank=False)
     saldo_inicial = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     saldo_final = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     criado_em = models.DateTimeField(auto_now_add=True)

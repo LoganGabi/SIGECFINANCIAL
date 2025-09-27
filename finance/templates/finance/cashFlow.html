@@ -24,6 +24,8 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Banco</th>
+                        <th>Usuário</th>
                         <th>Data</th>
                         <th>Descrição</th>
                         <th>Valor</th>
@@ -32,6 +34,8 @@
                 <tbody id="results">    
                 {% for registry in CashMovement %}
                 <tr>
+                    <td>{{ registry.cash.bank.bank_name }}</td>
+                    <td>{{ registry.cash.usuario_responsavel }}</td>
                     <td>{{ registry.created_at }}</td>
                     <td>{{registry.categoria}}</td>
                     <td>{{registry.accounts_in_cash.value}}</td>

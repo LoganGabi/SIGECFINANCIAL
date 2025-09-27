@@ -37,19 +37,25 @@ class PaymentMethodModelForm(forms.ModelForm):
     
     class Meta:
         model = PaymentMethod
-        fields = ['name_paymentMethod','creditPermission', 'considerInCash','bank']
+        fields = ['name_paymentMethod','bank']
         widgets = {
             'considerInCash' : forms.CheckboxInput(attrs={
                 'class':'form-check-input'
                 }),
-            'creditPermission':forms.CheckboxInput(attrs={
-                'class':'form-check-input'
-                })
+        
         } 
 
-    def __init__(self, *args, **kwargs): 
+    def __init__(self, *args, **kwargs):
         super(PaymentMethodModelForm, self).__init__(*args, **kwargs)
+        
+        # OK: Adiciona a classe CSS ao campo 'name_paymentMethod'
         self.fields['name_paymentMethod'].widget.attrs.update({'class': 'label-text'})
+        
+        # CORREÇÃO: Altera o queryset (conjunto de opções) do campo 'bank'
+        # 1. 'fields' em vez de 'fieds'
+        # 2. 'queryset' em vez de 'widget'
+        if 'bank' in self.fields:
+            self.fields['bank'].queryset = Bank.objects.filter(is_Active=True)
 
 class BankModelForm(forms.ModelForm):
     # ativo = forms.BooleanField(widget=forms.CheckboxInput(), required=False)

@@ -338,10 +338,19 @@ class CreditLimitForm(forms.ModelForm):
 class CaixaDiarioForm(forms.ModelForm):
     class Meta:
         model = CaixaDiario 
-        fields = ['saldo_inicial']
+        fields = ['saldo_inicial','bank']
         widgets = {
             'saldo_inicial': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
         }
         labels = {
             'saldo_inicial': 'Saldo Inicial',
         }
+    
+    def __init__(self, *args, **kwargs):
+        super(CaixaDiarioForm, self).__init__(*args, **kwargs)
+    
+        # CORREÇÃO: Altera o queryset (conjunto de opções) do campo 'bank'
+        # 1. 'fields' em vez de 'fieds'
+        # 2. 'queryset' em vez de 'widget'
+        if 'bank' in self.fields:
+            self.fields['bank'].queryset = Bank.objects.filter(is_Active=True) 

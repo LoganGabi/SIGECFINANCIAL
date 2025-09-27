@@ -53,7 +53,7 @@ def Accounts_Create(request):
         if form_Accounts.is_valid() and PaymentMethod_Accounts_FormSet.is_valid():
             account = form_Accounts.save()
             total_value = float(account.totalValue)
-
+            caixaExists = False
             # Processa cada parcela
             for form in PaymentMethod_Accounts_FormSet:
                 if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
@@ -68,20 +68,29 @@ def Accounts_Create(request):
 
                     # Criar movimentação de caixa se necessário
                     payment = form.cleaned_data['forma_pagamento']
-                    if payment.considerInCash and form.cleaned_data['expirationDate'] == today:
-                        try:
-                            caixa = CaixaDiario.objects.get(usuario_responsavel=request.user, is_Active=True)
-                            CashMovement.objects.create(
-                                cash=caixa,
-                                accounts_in_cash=instance,
-                                forma_pagamento=payment,
-                                categoria='Saída'
-                            )
-                        except CaixaDiario.DoesNotExist:
-                            form.add_error(None, "Usuário não possui um Caixa Diário ativo.")
+                    try:
+                        caixa = CaixaDiario.objects.get(usuario_responsavel=request.user, is_Active=True,bank=payment.bank)
+                        caixaExists =  True
+                        # Atualiza caixa
+                        caixa.saldo_final -= parcela
+                        caixa.save()
+
+                        # Atualiza banco
+                        caixa.bank.value_in_bank -= parcela
+                        caixa.bank.save()
+                        CashMovement.objects.create(
+                            cash=caixa,
+                            accounts_in_cash=instance,
+                            forma_pagamento=payment,
+                            categoria='Saída'
+                        )
+                    except CaixaDiario.DoesNotExist:
+                        caixaExists = False
+                        form.add_error(None, "Usuário não possui um Caixa Diário ativo desse Banco para esta forma de pagamento.")
+                        
 
             # Verifica se o total das parcelas bate com o valor total
-            if verify == total_value:
+            if verify == total_value and caixaExists:
                 messages.success(request, "Conta criada com sucesso.", extra_tags="successAccount")
                 return redirect('AccountsPayable')
             else:
@@ -143,12 +152,14 @@ def AccountsPayable_list(request):
                 Q(documentNumber__icontains=search_query)
             ) & ( Q(conta__is_active = True))
         ),
-        conta__acc = True
+        conta__acc = True,
+        status = True
        
     ).order_by('id')
     else:
         account = PaymentMethod_Accounts.objects.filter(
             (Q(conta__is_active = True)),
+            status = True,
             acc = True).order_by('id') 
 
     paginator = Paginator(account, 20)  
@@ -320,29 +331,41 @@ def AccountsReceivable_Create(request):
                     print(form.cleaned_data['expirationDate'])
                     print(today)
                     # Criar movimentação de caixa se necessário
-                  
+            caixaExists = False
+    
             # Verifica se o total das parcelas bate com o valor total
             if float(verify) == float(total_value):
                 for installment in installments:
                     installment.conta = account
                     installment.acc = False
                     installment.save()
-                    if payment.considerInCash and installment.expirationDate == today:
-                        try:
-                            caixa = CaixaDiario.objects.get(usuario_responsavel=request.user, is_Active=True)
-                        except CaixaDiario.DoesNotExist:
-                            form.add_error(None, "Usuário não possui um Caixa Diário ativo.")
-                            continue
-                        CashMovement.objects.create(
-                            cash=caixa,
-                            accounts_in_cash=form_instance,
-                            forma_pagamento=payment,
-                            categoria='Entrada'
-                        )
 
+                    try:
+                        caixa = CaixaDiario.objects.get(usuario_responsavel=request.user, is_Active=True,bank = payment.bank)
+                        caixaExists =  True
+                        # Atualiza caixa
+                        caixa.saldo_final += installment.value
+                        caixa.save()
 
-                messages.success(request, "Conta cadastrada com sucesso.", extra_tags="successAccount")
-                return redirect('AccountsReceivable')
+                        # Atualiza banco
+                        caixa.bank.value_in_bank += installment.value
+                        caixa.bank.save()
+
+                    except CaixaDiario.DoesNotExist:
+                        caixaExists = False
+
+                        form.add_error(None, "Usuário não possui um Caixa Diário do Banco para este pagamento.")
+                        continue
+                    CashMovement.objects.create(
+                        cash=caixa,
+                        accounts_in_cash=installment,
+                        forma_pagamento=payment,
+                        categoria='Entrada'
+                    )
+
+                if caixaExists:
+                    messages.success(request, "Conta cadastrada com sucesso.", extra_tags="successAccount")
+                    return redirect('AccountsReceivable')
             else:
                 form_Accounts.add_error(None,
                                         f"O valor do somatório das parcelas ({verify}) é diferente do Valor Total ({total_value}).")
@@ -393,11 +416,13 @@ def AccountsReceivable_list(request):
                 Q(documentNumber__icontains=search_query)
             ) & ( Q(conta__is_active=True))     
         ),
-        acc = False 
+        acc = False,
+        status = True 
     ).order_by('id')
     else:
         account = PaymentMethod_Accounts.objects.filter(
             (Q(conta__is_active = True)),
+            status = True,
             acc = False).order_by('id') 
 
     # Configure o Paginator com o queryset filtrado
@@ -445,7 +470,6 @@ def update_AccountsReceivable(request, id_Accounts):
     payment_instance = get_object_or_404(PaymentMethod_Accounts, id=id_Accounts)
     if payment_instance.conta:
         accounts_instance = get_object_or_404(Accounts, id=payment_instance.conta_id)
-        print('accounts_instance', accounts_instance)
         if request.method == "POST":  
             payment_form_instance = PaymentMethodAccountsForm(request.POST, instance=payment_instance)
             accounts_form_instance = AccountsFormUpdate(
@@ -500,7 +524,20 @@ def update_AccountsReceivable(request, id_Accounts):
 def delete_AccountsReceivable(request, id_Accounts):
     # Recupera o accounte com o id fornecido
     messages.success(request,"Conta deletada com sucesso.",extra_tags="successAccount")
-    account_deleta_pelo_amor_De_Deus = PaymentMethod_Accounts.objects.filter(id=id_Accounts,acc = False).delete() #filter(acc = False)
+
+    payment = PaymentMethod_Accounts.objects.get(id=id_Accounts,acc = False)#filter(acc = False)
+    payment.status = False
+    payment.save()
+    bank = Bank.objects.get(id=payment.forma_pagamento.bank.id)
+    cash = CaixaDiario.objects.get(bank = bank)
+    print(bank)
+    cash.saldo_final -= payment.value
+    cash.save()
+
+    cash.bank.value_in_bank -= payment.value
+    cash.bank.save()
+
+    
     return redirect('AccountsReceivable')
 
 
@@ -547,6 +584,8 @@ def Cash_registry(request):
             caixa.usuario_responsavel = request.user
             caixa.is_Active = True
             caixa.saldo_final = caixa.saldo_inicial
+            caixa.bank.value_in_bank += caixa.saldo_final
+            caixa.bank.save()
             caixa.save()
 
             messages.success(request, 'Caixa aberto com sucesso!')
@@ -587,7 +626,6 @@ def cashFlow(request):
     }
     return render(request, 'finance/cashFlow.html', context)
 
-def cashFlow(request,pk):
     
 
 def cash_close(request,pk):
@@ -596,3 +634,13 @@ def cash_close(request,pk):
     cash.save()
 
     return redirect('Cash_list')
+
+def cashFlowById(request,pk):
+    cash = get_object_or_404(CaixaDiario,pk = pk)
+    cashMovement = CashMovement.objects.filter(cash_id = cash.id)
+
+    context = {
+        'cashMovement':cashMovement
+    }
+
+    return render(request,'finance/cashFlow_list.html',context)
